@@ -22,7 +22,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.EntityResurrectEvent
 
-@Entry("totem_used_trigger", "A trigger for when players use a totem of undying", Colors.PURPLE, "ph:heart-bold")
+@Entry("on_totem_used_trigger", "A trigger for when players use a totem of undying", Colors.YELLOW, "ph:heart-bold")
 /**
  * The `Totem Used Trigger` is triggered when a player uses a totem of undying to cheat death.
  *

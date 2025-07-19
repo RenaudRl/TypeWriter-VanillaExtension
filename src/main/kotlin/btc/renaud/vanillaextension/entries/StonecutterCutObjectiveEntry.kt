@@ -21,7 +21,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.entity.Player
 import java.util.*
 
-@Entry("stonecutter_cut_objective", "An objective to cut items using a stonecutter", Colors.ORANGE, "ph:scissors-bold")
+@Entry("on_stonecutter_cut_objective", "An objective to cut items using a stonecutter", Colors.BLUE_VIOLET, "ph:scissors-bold")
 class StonecutterCutObjectiveEntry(
     override val id: String = "",
     override val name: String = "",

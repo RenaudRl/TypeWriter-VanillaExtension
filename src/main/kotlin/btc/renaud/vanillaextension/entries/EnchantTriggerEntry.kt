@@ -25,7 +25,7 @@ import org.bukkit.enchantments.Enchantment
 import btc.renaud.vanillaextension.EnchantmentType
 import java.util.*
 
-@Entry("vanillaenchant_trigger", "A trigger for when players enchant items", Colors.PURPLE, "ph:sparkle-bold")
+@Entry("on_enchant_trigger", "A trigger for when players enchant items", Colors.YELLOW, "ph:sparkle-bold")
 class EnchantTriggerEntry(
     override val id: String = "",
     override val name: String = "",

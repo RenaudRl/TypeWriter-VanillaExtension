@@ -21,7 +21,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.entity.Player
 import java.util.*
 
-@Entry("smelt_objective", "An objective to smelt items", Colors.ORANGE, "mdi:fire")
+@Entry("on_smelt_objective", "An objective to smelt items", Colors.BLUE_VIOLET, "mdi:fire")
 class SmeltObjectiveEntry(
     override val id: String = "",
     override val name: String = "",

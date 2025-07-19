@@ -25,7 +25,7 @@ import org.bukkit.event.inventory.FurnaceExtractEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 
-@Entry("smelt_trigger", "A trigger for when players extract smelted items from furnaces", Colors.ORANGE, "mdi:fire")
+@Entry("on_smelt_trigger", "A trigger for when players extract smelted items from furnaces", Colors.YELLOW, "mdi:fire")
 class SmeltTriggerEntry(
     override val id: String = "",
     override val name: String = "",

@@ -21,7 +21,7 @@ import org.bukkit.entity.Player
 import btc.renaud.vanillaextension.EnchantmentType
 import java.util.*
 
-@Entry("vanillaenchant_objective", "An objective to vanilla enchant items", Colors.BLUE_VIOLET, "ph:magic-wand-bold")
+@Entry("on_enchant_objective", "An objective to vanilla enchant items", Colors.BLUE_VIOLET, "ph:magic-wand-bold")
 class EnchantObjectiveEntry(
     override val id: String = "",
     override val name: String = "",

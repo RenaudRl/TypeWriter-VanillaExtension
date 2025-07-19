@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityResurrectEvent
 import java.util.*
 
-@Entry("totem_used_objective", "An objective to use a totem of undying", Colors.BLUE_VIOLET, "ph:heart-bold")
+@Entry("on_totem_used_objective", "An objective to use a totem of undying", Colors.BLUE_VIOLET, "ph:heart-bold")
 class TotemUsedObjectiveEntry(
     override val id: String = "",
     override val name: String = "",

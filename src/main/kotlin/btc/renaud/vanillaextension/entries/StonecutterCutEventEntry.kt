@@ -21,7 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import kotlin.reflect.KClass
 
-@Entry("stonecutter_cut_event", "Trigger when player cuts specific item in stonecutter", Colors.ORANGE, "ph:scissors-bold")
+@Entry("on_stonecutter_cut_event", "Trigger when player cuts specific item in stonecutter", Colors.YELLOW, "ph:scissors-bold")
 @ContextKeys(StonecutterCutContextKeys::class)
 /**
  * The `Stonecutter Cut Event` is triggered when a player cuts an item using a stonecutter.
