@@ -13,6 +13,7 @@ import com.typewritermc.engine.paper.entry.entries.AudienceEntry
 import com.typewritermc.engine.paper.entry.entries.AudienceFilter
 import com.typewritermc.engine.paper.entry.entries.AudienceFilterEntry
 import com.typewritermc.engine.paper.entry.entries.CachableFactEntry
+import com.typewritermc.engine.paper.entry.entries.ReadableFactEntry
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.matches
 import com.typewritermc.engine.paper.entry.triggerFor
@@ -32,7 +33,7 @@ class FactCheckEventEntry(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     @Help("The fact to check.")
-    val fact: Ref<CachableFactEntry> = emptyRef(),
+    val fact: Ref<ReadableFactEntry> = emptyRef(),
     @Help("The value that the fact should match to trigger the event.")
     val expectedValue: Int = 0,
     @Help("The comparison operator to use (EQUAL, GREATER_THAN, LESS_THAN, GREATER_OR_EQUAL, LESS_OR_EQUAL).")

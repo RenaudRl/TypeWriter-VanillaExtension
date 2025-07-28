@@ -46,7 +46,7 @@ class FactCheckObjectiveEntry(
     override val criteria: List<Criteria> = emptyList(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     @Help("The fact to check.")
-    val fact: Ref<CachableFactEntry> = emptyRef(),
+    val fact: Ref<ReadableFactEntry> = emptyRef(),
     @Help("The value that the fact should match to complete the objective.")
     val expectedValue: Int = 0,
     @Help("The comparison operator to use (EQUAL, GREATER_THAN, LESS_THAN, GREATER_OR_EQUAL, LESS_OR_EQUAL).")
