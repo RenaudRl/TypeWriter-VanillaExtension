@@ -12,56 +12,66 @@ import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.quest.QuestEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveDisplay
+import org.bukkit.Material
 import org.bukkit.entity.Player
-import io.papermc.paper.event.player.AsyncChatEvent
+import org.bukkit.event.inventory.InventoryOpenEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
+import org.bukkit.block.Barrel
 import java.util.*
 
-@Entry("fact_check_objective", "An objective to fact-check messages in chat", Colors.BLUE_VIOLET, "mdi:fact-check")
-class FactCheckObjectiveEntry(
+@Entry("barrel_objective", "An objective to interact with barrels", Colors.BLUE_VIOLET, "mdi:barrel")
+class BarrelObjectiveEntry(
     override val id: String = "",
     override val name: String = "",
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val criteria: List<Criteria> = emptyList(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val fact: Ref<CachableFactEntry> = emptyRef(),
-    @Help("Keywords that trigger fact-checking. Leave empty to check all messages.")
-    val keywords: Var<String> = ConstVar(""),
-    @Help("The total number of fact-checks the player needs to perform.")
+    @Help("The type of interaction: 'open', 'close', or 'any'")
+    val interactionType: Var<String> = ConstVar("any"),
+    @Help("The total number of barrel interactions the player needs to perform.")
     override val amount: Var<Int> = ConstVar(5),
     override val display: Var<String> = ConstVar(""),
     override val onComplete: Ref<TriggerableEntry> = emptyRef(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : BaseCountObjectiveEntry {
     override suspend fun display(): AudienceFilter {
-        return FactCheckObjectiveDisplay(ref())
+        return BarrelObjectiveDisplay(ref())
     }
 }
 
-private class FactCheckObjectiveDisplay(ref: Ref<FactCheckObjectiveEntry>) :
-    BaseCountObjectiveDisplay<FactCheckObjectiveEntry>(ref) {
+private class BarrelObjectiveDisplay(ref: Ref<BarrelObjectiveEntry>) :
+    BaseCountObjectiveDisplay<BarrelObjectiveEntry>(ref) {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    fun onFactCheck(event: AsyncChatEvent) {
-        val player = event.player
+    fun onBarrelOpen(event: InventoryOpenEvent) {
+        val player = event.player as? Player ?: return
         val entry = ref.get() ?: return
         if (!filter(player)) return
+
+        val holder = event.inventory.holder
+        if (holder !is Barrel) return
         
-        val message = event.message().toString()
-        val keywords = entry.keywords.get(player)
+        val requiredType = entry.interactionType.get(player).lowercase()
+        if (requiredType != "any" && requiredType != "open") return
         
-        val shouldTrigger = if (keywords.isEmpty()) {
-            true // Check all messages if no keywords specified
-        } else {
-            // Check if message contains any of the keywords
-            keywords.split(",").any { keyword ->
-                message.contains(keyword.trim(), ignoreCase = true)
-            }
-        }
+        incrementCount(player, 1)
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onBarrelClose(event: InventoryCloseEvent) {
+        val player = event.player as? Player ?: return
+        val entry = ref.get() ?: return
+        if (!filter(player)) return
+
+        val holder = event.inventory.holder
+        if (holder !is Barrel) return
         
-        if (shouldTrigger) {
-            incrementCount(player, 1)
-        }
+        val requiredType = entry.interactionType.get(player).lowercase()
+        if (requiredType != "any" && requiredType != "close") return
+        
+        incrementCount(player, 1)
     }
 }

@@ -14,6 +14,7 @@ import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.asMini
 import com.typewritermc.engine.paper.utils.asMiniWithResolvers
 import com.typewritermc.quest.ObjectiveEntry
+import btc.renaud.vanillaextension.ObjectiveDisplay
 import com.typewritermc.quest.inactiveObjectiveDisplay
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed
 import org.bukkit.entity.Player

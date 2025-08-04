@@ -13,54 +13,54 @@ import com.typewritermc.quest.QuestEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveDisplay
 import org.bukkit.entity.Player
-import io.papermc.paper.event.player.AsyncChatEvent
+import org.bukkit.event.player.PlayerAdvancementDoneEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import java.util.*
 
-@Entry("fact_check_objective", "An objective to fact-check messages in chat", Colors.BLUE_VIOLET, "mdi:fact-check")
-class FactCheckObjectiveEntry(
+@Entry("advancement_grant_objective", "An objective to complete advancements", Colors.BLUE_VIOLET, "mdi:trophy")
+class AdvancementGrantObjectiveEntry(
     override val id: String = "",
     override val name: String = "",
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val criteria: List<Criteria> = emptyList(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val fact: Ref<CachableFactEntry> = emptyRef(),
-    @Help("Keywords that trigger fact-checking. Leave empty to check all messages.")
-    val keywords: Var<String> = ConstVar(""),
-    @Help("The total number of fact-checks the player needs to perform.")
-    override val amount: Var<Int> = ConstVar(5),
+    @Help("The advancement key that needs to be completed. Leave empty to count any advancement.")
+    val advancementKey: Var<String> = ConstVar(""),
+    @Help("The amount of advancements the player needs to complete.")
+    override val amount: Var<Int> = ConstVar(1),
     override val display: Var<String> = ConstVar(""),
     override val onComplete: Ref<TriggerableEntry> = emptyRef(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : BaseCountObjectiveEntry {
     override suspend fun display(): AudienceFilter {
-        return FactCheckObjectiveDisplay(ref())
+        return AdvancementGrantObjectiveDisplay(ref())
     }
 }
 
-private class FactCheckObjectiveDisplay(ref: Ref<FactCheckObjectiveEntry>) :
-    BaseCountObjectiveDisplay<FactCheckObjectiveEntry>(ref) {
+private class AdvancementGrantObjectiveDisplay(ref: Ref<AdvancementGrantObjectiveEntry>) :
+    BaseCountObjectiveDisplay<AdvancementGrantObjectiveEntry>(ref) {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    fun onFactCheck(event: AsyncChatEvent) {
+    fun onAdvancementGrant(event: PlayerAdvancementDoneEvent) {
         val player = event.player
         val entry = ref.get() ?: return
         if (!filter(player)) return
+
+        val advancement = event.advancement
+        val advancementKey = advancement.key.toString()
         
-        val message = event.message().toString()
-        val keywords = entry.keywords.get(player)
+        val requiredKey = entry.advancementKey.get(player)
         
-        val shouldTrigger = if (keywords.isEmpty()) {
-            true // Check all messages if no keywords specified
-        } else {
-            // Check if message contains any of the keywords
-            keywords.split(",").any { keyword ->
-                message.contains(keyword.trim(), ignoreCase = true)
-            }
+        // If no specific advancement is required, count all advancements
+        if (requiredKey.isEmpty()) {
+            incrementCount(player, 1)
+            return
         }
         
-        if (shouldTrigger) {
+        // Check if the advancement key matches the required key
+        if (advancementKey.contains(requiredKey)) {
             incrementCount(player, 1)
         }
     }

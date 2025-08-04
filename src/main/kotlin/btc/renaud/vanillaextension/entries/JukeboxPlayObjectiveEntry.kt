@@ -13,55 +13,54 @@ import com.typewritermc.quest.QuestEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveDisplay
 import org.bukkit.entity.Player
-import io.papermc.paper.event.player.AsyncChatEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.block.Action
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import java.util.*
 
-@Entry("fact_check_objective", "An objective to fact-check messages in chat", Colors.BLUE_VIOLET, "mdi:fact-check")
-class FactCheckObjectiveEntry(
+@Entry("jukebox_play_objective", "An objective to play music discs in jukeboxes", Colors.BLUE_VIOLET, "mdi:music-box")
+class JukeboxPlayObjectiveEntry(
     override val id: String = "",
     override val name: String = "",
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val criteria: List<Criteria> = emptyList(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val fact: Ref<CachableFactEntry> = emptyRef(),
-    @Help("Keywords that trigger fact-checking. Leave empty to check all messages.")
-    val keywords: Var<String> = ConstVar(""),
-    @Help("The total number of fact-checks the player needs to perform.")
-    override val amount: Var<Int> = ConstVar(5),
+    @Help("The total number of music discs the player needs to play.")
+    override val amount: Var<Int> = ConstVar(3),
     override val display: Var<String> = ConstVar(""),
     override val onComplete: Ref<TriggerableEntry> = emptyRef(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : BaseCountObjectiveEntry {
     override suspend fun display(): AudienceFilter {
-        return FactCheckObjectiveDisplay(ref())
+        return JukeboxPlayObjectiveDisplay(ref())
     }
 }
 
-private class FactCheckObjectiveDisplay(ref: Ref<FactCheckObjectiveEntry>) :
-    BaseCountObjectiveDisplay<FactCheckObjectiveEntry>(ref) {
+private class JukeboxPlayObjectiveDisplay(ref: Ref<JukeboxPlayObjectiveEntry>) :
+    BaseCountObjectiveDisplay<JukeboxPlayObjectiveEntry>(ref) {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    fun onFactCheck(event: AsyncChatEvent) {
+    fun onJukeboxPlay(event: PlayerInteractEvent) {
+        if (event.action != Action.RIGHT_CLICK_BLOCK) return
+        
+        val clickedBlock = event.clickedBlock ?: return
         val player = event.player
-        val entry = ref.get() ?: return
         if (!filter(player)) return
         
-        val message = event.message().toString()
-        val keywords = entry.keywords.get(player)
+        // Check if it's a jukebox
+        if (clickedBlock.type.name != "JUKEBOX") return
         
-        val shouldTrigger = if (keywords.isEmpty()) {
-            true // Check all messages if no keywords specified
-        } else {
-            // Check if message contains any of the keywords
-            keywords.split(",").any { keyword ->
-                message.contains(keyword.trim(), ignoreCase = true)
-            }
-        }
+        // Check if jukebox is empty and player has a music disc
+        val jukeboxState = clickedBlock.state as? org.bukkit.block.Jukebox ?: return
+        if (jukeboxState.record.type != org.bukkit.Material.AIR) return // Jukebox already has a record
         
-        if (shouldTrigger) {
-            incrementCount(player, 1)
-        }
+        val itemInHand = event.item ?: return
+        
+        // Check if item is a music disc
+        if (!itemInHand.type.name.contains("MUSIC_DISC")) return
+        
+        incrementCount(player, 1)
     }
 }

@@ -12,55 +12,59 @@ import com.typewritermc.engine.paper.entry.entries.*
 import com.typewritermc.quest.QuestEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveDisplay
+import org.bukkit.Material
 import org.bukkit.entity.Player
-import io.papermc.paper.event.player.AsyncChatEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.block.Action
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import java.util.*
 
-@Entry("fact_check_objective", "An objective to fact-check messages in chat", Colors.BLUE_VIOLET, "mdi:fact-check")
-class FactCheckObjectiveEntry(
+@Entry("cake_slice_objective", "An objective to eat cake slices", Colors.BLUE_VIOLET, "mdi:cake")
+class CakeSliceObjectiveEntry(
     override val id: String = "",
     override val name: String = "",
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val criteria: List<Criteria> = emptyList(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val fact: Ref<CachableFactEntry> = emptyRef(),
-    @Help("Keywords that trigger fact-checking. Leave empty to check all messages.")
-    val keywords: Var<String> = ConstVar(""),
-    @Help("The total number of fact-checks the player needs to perform.")
-    override val amount: Var<Int> = ConstVar(5),
+    @Help("The minimum remaining slices for the cake to count. Set to 0 to count any cake slice.")
+    val minimumRemainingSlices: Var<Int> = ConstVar(0),
+    @Help("The total number of cake slices the player needs to eat.")
+    override val amount: Var<Int> = ConstVar(7),
     override val display: Var<String> = ConstVar(""),
     override val onComplete: Ref<TriggerableEntry> = emptyRef(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : BaseCountObjectiveEntry {
     override suspend fun display(): AudienceFilter {
-        return FactCheckObjectiveDisplay(ref())
+        return CakeSliceObjectiveDisplay(ref())
     }
 }
 
-private class FactCheckObjectiveDisplay(ref: Ref<FactCheckObjectiveEntry>) :
-    BaseCountObjectiveDisplay<FactCheckObjectiveEntry>(ref) {
+private class CakeSliceObjectiveDisplay(ref: Ref<CakeSliceObjectiveEntry>) :
+    BaseCountObjectiveDisplay<CakeSliceObjectiveEntry>(ref) {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    fun onFactCheck(event: AsyncChatEvent) {
+    fun onCakeSlice(event: PlayerInteractEvent) {
+        // Only trigger for right-click on cake
+        if (event.action != Action.RIGHT_CLICK_BLOCK) return
+        
+        val clickedBlock = event.clickedBlock ?: return
+        if (clickedBlock.type != Material.CAKE) return
+        
         val player = event.player
         val entry = ref.get() ?: return
         if (!filter(player)) return
         
-        val message = event.message().toString()
-        val keywords = entry.keywords.get(player)
+        // Calculate remaining slices (cake has 7 slices, bites property goes from 0 to 6)
+        val cakeData = clickedBlock.blockData as? org.bukkit.block.data.type.Cake
+        val bites = cakeData?.bites ?: 0
+        val remainingSlices = 7 - bites - 1 // -1 because we're about to eat one
         
-        val shouldTrigger = if (keywords.isEmpty()) {
-            true // Check all messages if no keywords specified
-        } else {
-            // Check if message contains any of the keywords
-            keywords.split(",").any { keyword ->
-                message.contains(keyword.trim(), ignoreCase = true)
-            }
-        }
+        val minRemaining = entry.minimumRemainingSlices.get(player)
         
-        if (shouldTrigger) {
+        // Check if the remaining slices meet the minimum requirement
+        if (remainingSlices >= minRemaining) {
             incrementCount(player, 1)
         }
     }

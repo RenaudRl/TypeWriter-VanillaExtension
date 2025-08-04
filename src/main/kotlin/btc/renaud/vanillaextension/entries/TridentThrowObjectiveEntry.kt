@@ -13,54 +13,48 @@ import com.typewritermc.quest.QuestEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveEntry
 import btc.renaud.vanillaextension.BaseCountObjectiveDisplay
 import org.bukkit.entity.Player
-import io.papermc.paper.event.player.AsyncChatEvent
+import org.bukkit.entity.Trident
+import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import java.util.*
 
-@Entry("fact_check_objective", "An objective to fact-check messages in chat", Colors.BLUE_VIOLET, "mdi:fact-check")
-class FactCheckObjectiveEntry(
+@Entry("trident_throw_objective", "An objective to throw tridents", Colors.BLUE_VIOLET, "mdi:spear")
+class TridentThrowObjectiveEntry(
     override val id: String = "",
     override val name: String = "",
     override val quest: Ref<QuestEntry> = emptyRef(),
     override val criteria: List<Criteria> = emptyList(),
     override val children: List<Ref<AudienceEntry>> = emptyList(),
     override val fact: Ref<CachableFactEntry> = emptyRef(),
-    @Help("Keywords that trigger fact-checking. Leave empty to check all messages.")
-    val keywords: Var<String> = ConstVar(""),
-    @Help("The total number of fact-checks the player needs to perform.")
+    @Help("The minimum velocity required for the throw to count. Set to 0 to count any throw.")
+    val minimumVelocity: Var<Double> = ConstVar(0.0),
+    @Help("The total number of tridents the player needs to throw.")
     override val amount: Var<Int> = ConstVar(5),
     override val display: Var<String> = ConstVar(""),
     override val onComplete: Ref<TriggerableEntry> = emptyRef(),
     override val priorityOverride: Optional<Int> = Optional.empty(),
 ) : BaseCountObjectiveEntry {
     override suspend fun display(): AudienceFilter {
-        return FactCheckObjectiveDisplay(ref())
+        return TridentThrowObjectiveDisplay(ref())
     }
 }
 
-private class FactCheckObjectiveDisplay(ref: Ref<FactCheckObjectiveEntry>) :
-    BaseCountObjectiveDisplay<FactCheckObjectiveEntry>(ref) {
+private class TridentThrowObjectiveDisplay(ref: Ref<TridentThrowObjectiveEntry>) :
+    BaseCountObjectiveDisplay<TridentThrowObjectiveEntry>(ref) {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    fun onFactCheck(event: AsyncChatEvent) {
-        val player = event.player
+    fun onTridentThrow(event: ProjectileLaunchEvent) {
+        val trident = event.entity as? Trident ?: return
+        val player = trident.shooter as? Player ?: return
         val entry = ref.get() ?: return
         if (!filter(player)) return
+
+        val throwVelocity = trident.velocity.length()
+        val minVelocity = entry.minimumVelocity.get(player)
         
-        val message = event.message().toString()
-        val keywords = entry.keywords.get(player)
-        
-        val shouldTrigger = if (keywords.isEmpty()) {
-            true // Check all messages if no keywords specified
-        } else {
-            // Check if message contains any of the keywords
-            keywords.split(",").any { keyword ->
-                message.contains(keyword.trim(), ignoreCase = true)
-            }
-        }
-        
-        if (shouldTrigger) {
+        // Check if the throw velocity meets the minimum requirement
+        if (throwVelocity >= minVelocity) {
             incrementCount(player, 1)
         }
     }
