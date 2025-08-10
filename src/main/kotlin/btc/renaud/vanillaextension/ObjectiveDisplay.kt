@@ -22,31 +22,6 @@ abstract class ObjectiveDisplay<T : ObjectiveEntry>(
         return ref.get()?.criteria?.matches(player) == true
     }
 
-    override fun onPlayerAdd(player: Player) {
-        val entry = ref.get() ?: return
-
-        factWatcherSubscriptions.compute(player.uniqueId) { _, subscription ->
-            subscription?.cancel(player)
-            player.listenForFacts(
-                entry.criteria.map { it.fact },
-                ::onFactChange,
-            )
-        }
-
-        if (filter(player)) {
-            super.onPlayerAdd(player)
-        }
-    }
-
-    private fun onFactChange(player: Player, _fact: Ref<ReadableFactEntry>) {
-        player.refresh()
-    }
-
-    override fun onPlayerRemove(player: Player) {
-        super.onPlayerRemove(player)
-        factWatcherSubscriptions.remove(player.uniqueId)?.cancel(player)
-    }
-
     override fun onPlayerFilterAdded(player: Player) {
         super.onPlayerFilterAdded(player)
         val quest = ref.get()?.quest ?: return
@@ -65,14 +40,5 @@ abstract class ObjectiveDisplay<T : ObjectiveEntry>(
                 player.trackQuest(quest)
             }
         } ?: player.trackQuest(quest)
-    }
-
-    override fun dispose() {
-        super.dispose()
-        factWatcherSubscriptions.forEach { (playerId, subscription) ->
-            server.getPlayer(playerId)?.let { player ->
-                subscription.cancel(player)
-            }
-        }
     }
 }
