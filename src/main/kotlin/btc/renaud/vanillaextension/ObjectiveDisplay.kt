@@ -9,6 +9,7 @@ import com.typewritermc.engine.paper.facts.FactListenerSubscription
 import com.typewritermc.engine.paper.facts.listenForFacts
 import com.typewritermc.engine.paper.utils.server
 import com.typewritermc.quest.*
+import com.typewritermc.quest.entries.*
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -42,3 +43,4 @@ abstract class ObjectiveDisplay<T : ObjectiveEntry>(
         } ?: player.trackQuest(quest)
     }
 }
+

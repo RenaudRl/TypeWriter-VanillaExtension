@@ -64,3 +64,4 @@ enum class EnchantmentType(private val key: String?) {
         }
     }
 }
+
