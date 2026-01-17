@@ -2,7 +2,7 @@
 
 ![Java Version](https://img.shields.io/badge/Java-21-orange)
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Target](https://img.shields.io/badge/Target-Paper%20/%20Folia%20/%20TypeWriter-blue)
+![Target](https://img.shields.io/badge/Target-Paper%20/%20Folia%20/%20BTC--CORE-blue)
 
 **Vanilla Extension** is a core integration module for **TypeWriter**, engineered for **BTC Studio** infrastructure. It bridges standard Minecraft mechanics with the TypeWriter engine, enabling triggering and configuration based on vanilla events.
 
