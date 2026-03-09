@@ -81,8 +81,28 @@ class VisibilityDetectionActivity(
     private val startLocation: PositionProperty
 ) : EntityActivity<ActivityContext> {
 
-    private val scheduler: com.typewritermc.engine.paper.scheduler.SchedulerAdapter by lazy { org.koin.java.KoinJavaComponent.get(com.typewritermc.engine.paper.scheduler.SchedulerAdapter::class.java) }
+    private val isFolia: Boolean by lazy {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer")
+            true
+        } catch (_: ClassNotFoundException) {
+            false
+        }
+    }
 
+    private fun runGlobal(task: () -> Unit) {
+        if (isFolia) {
+            try {
+                val globalRegionScheduler = Bukkit::class.java.getMethod("getGlobalRegionScheduler").invoke(null)
+                val runMethod = globalRegionScheduler.javaClass.getMethod("execute", org.bukkit.plugin.Plugin::class.java, Runnable::class.java)
+                runMethod.invoke(globalRegionScheduler, plugin, Runnable { task() })
+            } catch (e: Exception) {
+                // Fallback
+            }
+        } else {
+            Bukkit.getScheduler().runTask(plugin, Runnable { task() })
+        }
+    }
     var currentPos: PositionProperty = startLocation
     var isSeeingPlayer: Boolean = false
     private val seenPlayers = mutableSetOf<Player>()
@@ -133,12 +153,12 @@ class VisibilityDetectionActivity(
                     triggers.triggerEntriesFor(player) { }
                     
                     // Trigger Event: VisibilityDetectionEvent
-                    scheduler.runGlobal(plugin, Runnable {
+                    runGlobal {
                         Bukkit.getPluginManager().callEvent(VisibilityDetectionEvent(
                             context.instanceRef,
                             player
                         ))
-                    })
+                    }
                 }
             }
         }
@@ -150,9 +170,9 @@ class VisibilityDetectionActivity(
         if (ticks % 10 == 0) {
             val observers = context.viewers.filter { showDisplay.get(it) }
             if (observers.isNotEmpty()) {
-                scheduler.runGlobal(plugin, Runnable {
+                runGlobal {
                    displayVision(observers, eyeLoc, applyR, f, s)
-                })
+                }
             }
         }
         
