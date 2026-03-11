@@ -8,18 +8,6 @@
 
 ---
 
-## 🚀 Key Features
-
-### 🔮 Enchantment Integration
-- **Enchanting Table Triggers**: Hook into vanilla enchanting events to trigger TypeWriter actions.
-- **Anvil Mechanics**: Detect and react to item combinations and repairs in anvils.
-
-### 🛠️ Vanilla Feature Support
-- **Native Events**: Seamlessly integrates with native Minecraft behaviors.
-- **Configurable Triggers**: Use TypeWriter's powerful configuration system to define complex reactions to standard gameplay.
-
----
-
 ## ⚙️ Configuration
 
 Vanilla Extension configuration is managed via TypeWriter's manifest system.
