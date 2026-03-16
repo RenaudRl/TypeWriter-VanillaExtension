@@ -7,6 +7,7 @@ group = "btc.renaud.vanillaextension"
 version = "0.0.4"
 
 repositories {
+    maven("https://repo.codemc.io/repository/maven-public/")
     maven("https://repo.papermc.io/repository/maven-public/")
     mavenCentral()
     maven("https://maven.typewritermc.com/beta/")
@@ -18,12 +19,10 @@ repositories {
 dependencies {
     implementation("com.typewritermc:QuestExtension:0.9.0")
     implementation("com.typewritermc:BasicExtension:0.9.0")
-    implementation(project(":EntityExtension"))
-    implementation(project(":RoadNetworkExtension"))
-    implementation(project(":MythicMobsExtension"))
+    implementation("com.typewritermc:EntityExtension:0.9.0")
+    implementation("com.typewritermc:RoadNetworkExtension:0.9.0")
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     compileOnly("com.infernalsuite.asp:api:4.0.0-SNAPSHOT")
-    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 }
 
 typewriter {
