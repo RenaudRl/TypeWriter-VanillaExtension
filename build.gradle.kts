@@ -1,6 +1,6 @@
-plugins {
+﻿plugins {
     kotlin("jvm") version "2.2.10"
-    id("com.typewritermc.module-plugin")
+    id("com.typewritermc.module-plugin") version "2.1.0"
 }
 
 group = "btc.renaud.vanillaextension"
@@ -14,6 +14,9 @@ repositories {
     maven("https://jitpack.io/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
+    flatDir {
+        dir("libs")
+    }
 }
 
 dependencies {
@@ -31,7 +34,7 @@ typewriter {
         name = "Vanilla"
         shortDescription = "Typewriter extension for Differents Vanilla entries support."
         description = "This extension adds support for various vanilla Minecraft features in Typewriter, allowing you to configure triggers for enchantment application in both enchanting tables and anvils."
-        engineVersion = file("../../version.txt").readText().trim()
+        engineVersion = "0.9.0-beta-171"
         channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
         dependencies { dependency("typewritermc", "Quest") }
         paper()
