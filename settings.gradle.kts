@@ -6,5 +6,5 @@
     }
 }
 
-rootProject.name = 'VanillaExtension'
+rootProject.name = "VanillaExtension"
 
