@@ -54,7 +54,7 @@ class TargetLocationVisibilityDetectionActivityEntry(
         context: ActivityContext,
         currentLocation: PositionProperty
     ): EntityActivity<in ActivityContext> {
-        val targetActivity = TargetLocationActivity(roadNetwork, targetLocation, idleActivity, currentLocation)
+        val targetActivity = TargetLocationActivity(roadNetwork, targetLocation, idleActivity, false, currentLocation)
         
         val vision = VisibilityDetectionActivity(
             radius = visionRadius,

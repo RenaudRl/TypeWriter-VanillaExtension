@@ -7,6 +7,7 @@ import com.typewritermc.core.extension.annotations.Default
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.extension.annotations.Help
 import com.typewritermc.core.utils.point.distanceSqrt
+import com.typewritermc.core.utils.point.distanceSquared
 import com.typewritermc.engine.paper.entry.entity.ActivityContext
 import com.typewritermc.engine.paper.entry.entries.EntityProperty
 import com.typewritermc.engine.paper.entry.TriggerableEntry
@@ -152,7 +153,7 @@ class RandomPatrolActivity(
     fun refreshActivity(context: ActivityContext, network: RoadNetwork): TickResult {
         val currentPos = currentPosition.toPosition()
         val nextNode = network.nodes
-            .filter { (it.position.distanceSquared(currentPos)) <= radiusSquared }
+            .filter { (it.position.distanceSquared(currentPos) ?: Double.MAX_VALUE) <= radiusSquared }
             .randomOrNull()
             ?: return TickResult.IGNORED
 

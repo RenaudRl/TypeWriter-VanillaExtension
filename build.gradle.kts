@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "btcrenaud"
-version = "0.1.1"
+version = "0.1.2"
 
 repositories {
     mavenLocal()
@@ -30,7 +30,7 @@ typewriter {
         name = "Vanilla"
         shortDescription = "Typewriter extension for Differents Vanilla entries support."
         description = """Typewriter extension module providing additional entries for the Typewriter plugin ecosystem. Supports Paper and Folia server platforms with full feature parity. This module extends the core functionality with specialized entries. Compatible with the official Typewriter engine and designed for standalone use."""
-        engineVersion = "0.9.0-beta-174"
+        engineVersion = "0.9.0-beta-175"
         channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
         
         paper()
@@ -47,6 +47,6 @@ typewriter {
     
 
 kotlin {
-    jvmToolchain(25)
-    
+    jvmToolchain(21)
 }
+
