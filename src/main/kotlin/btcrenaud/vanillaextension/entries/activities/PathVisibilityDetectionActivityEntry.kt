@@ -91,9 +91,9 @@ class PathVisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = navigationActivity.currentProperties + vision.currentProperties
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        navigationActivity.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        navigationActivity.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -109,8 +109,13 @@ class PathVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        navigationActivity.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        navigationActivity.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        navigationActivity.dispose()
+        vision.dispose()
     }
 }

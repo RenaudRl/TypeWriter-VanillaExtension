@@ -58,7 +58,9 @@ class HealthDetectionActivity(
     var hasLowHealth: Boolean = false
         private set
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {}
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        currentPosition = position
+    }
 
     override fun tick(context: ActivityContext): TickResult {
         val players = context.viewers.filter {
@@ -104,7 +106,7 @@ class HealthDetectionActivity(
         return TickResult.IGNORED
     }
 
-    override fun dispose(context: ActivityContext) {
+    override fun deactivate(context: ActivityContext) {
         lowHealthPlayers.clear()
     }
 }

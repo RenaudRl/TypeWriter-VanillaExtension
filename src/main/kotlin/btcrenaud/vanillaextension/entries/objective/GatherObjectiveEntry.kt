@@ -72,7 +72,7 @@ class GatherObjectiveEntry(
             gatherObjectiveDisplay
         }
 
-        return text.asMiniWithResolvers(
+        return text.asMiniWithResolvers(player,
             parsed("display", display.get(player)),
             parsed("current", itemCount.toString()),
             parsed("required", requiredAmount.toString())

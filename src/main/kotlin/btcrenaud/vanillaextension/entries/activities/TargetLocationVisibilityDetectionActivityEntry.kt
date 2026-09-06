@@ -81,9 +81,9 @@ class TargetLocationVisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = targetActivity.currentProperties + vision.currentProperties
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        targetActivity.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        targetActivity.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -99,8 +99,13 @@ class TargetLocationVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        targetActivity.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        targetActivity.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        targetActivity.dispose()
+        vision.dispose()
     }
 }

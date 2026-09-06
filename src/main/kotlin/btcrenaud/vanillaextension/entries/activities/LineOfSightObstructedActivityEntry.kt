@@ -55,7 +55,9 @@ class LineOfSightObstructedActivity(
     var isObstructed: Boolean = false
         private set
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {}
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        currentPosition = position
+    }
 
     override fun tick(context: ActivityContext): TickResult {
         obstructedPlayers.clear()
@@ -101,7 +103,7 @@ class LineOfSightObstructedActivity(
         return TickResult.IGNORED
     }
 
-    override fun dispose(context: ActivityContext) {
+    override fun deactivate(context: ActivityContext) {
         obstructedPlayers.clear()
     }
 }

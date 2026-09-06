@@ -88,9 +88,9 @@ class SpinVisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = spinActivity.currentProperties + vision.currentProperties
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        spinActivity.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        spinActivity.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -108,8 +108,13 @@ class SpinVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        spinActivity.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        spinActivity.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        spinActivity.dispose()
+        vision.dispose()
     }
 }

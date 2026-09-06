@@ -69,7 +69,7 @@ interface BaseCountObjectiveEntry : ObjectiveEntry {
 
         val text = if (isComplete) completedDisplaySnippet else displaySnippet
 
-        return text.asMiniWithResolvers(
+        return text.asMiniWithResolvers(player,
             parsed("display", displayText),
             parsed("current", currentValue.toString()),
             parsed("required", requiredAmount.toString())

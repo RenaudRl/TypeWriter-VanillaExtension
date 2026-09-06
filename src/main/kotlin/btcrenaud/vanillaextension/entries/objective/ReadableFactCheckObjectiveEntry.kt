@@ -89,7 +89,7 @@ class ReadableFactCheckObjectiveEntry(
             "$displayText <dark_gray>(<gray>$currentValue</gray>/<gray>$requiredAmount</gray>)"
         }
 
-        return progress.asMiniWithResolvers(
+        return progress.asMiniWithResolvers(player,
             parsed("display", progress)
         ).asMini().parsePlaceholders(player)
     }
