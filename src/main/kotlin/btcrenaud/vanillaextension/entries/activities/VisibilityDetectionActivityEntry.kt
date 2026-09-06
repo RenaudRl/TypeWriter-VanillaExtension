@@ -117,8 +117,9 @@ class VisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = emptyList()
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        // Initialization logic
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        currentPos = position
+        seenPlayers.clear()
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -192,7 +193,11 @@ class VisibilityDetectionActivity(
         return result == null || result.hitBlock == null
     }
 
-    override fun dispose(context: ActivityContext) {
+    override fun deactivate(context: ActivityContext) {
+        seenPlayers.clear()
+    }
+
+    override fun dispose() {
         seenPlayers.clear()
     }
 

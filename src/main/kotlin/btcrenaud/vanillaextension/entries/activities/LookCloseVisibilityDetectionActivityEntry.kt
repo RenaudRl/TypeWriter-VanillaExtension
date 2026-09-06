@@ -80,9 +80,9 @@ class LookCloseVisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = lookClose.currentProperties + vision.currentProperties
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        lookClose.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        lookClose.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -98,8 +98,13 @@ class LookCloseVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        lookClose.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        lookClose.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        lookClose.dispose()
+        vision.dispose()
     }
 }
