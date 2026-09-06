@@ -83,9 +83,9 @@ class BobbingVisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = bobbingActivity.currentProperties + vision.currentProperties
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        bobbingActivity.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        bobbingActivity.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -101,8 +101,13 @@ class BobbingVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        bobbingActivity.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        bobbingActivity.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        bobbingActivity.dispose()
+        vision.dispose()
     }
 }

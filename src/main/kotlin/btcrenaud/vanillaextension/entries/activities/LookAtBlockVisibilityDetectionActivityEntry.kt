@@ -73,9 +73,9 @@ class LookAtBlockVisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = lookActivity.currentProperties + vision.currentProperties
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        lookActivity.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        lookActivity.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -91,8 +91,13 @@ class LookAtBlockVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        lookActivity.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        lookActivity.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        lookActivity.dispose()
+        vision.dispose()
     }
 }

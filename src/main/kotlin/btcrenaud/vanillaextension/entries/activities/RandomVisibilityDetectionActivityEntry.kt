@@ -82,9 +82,9 @@ class RandomVisibilityDetectionActivity(
     override val currentProperties: List<EntityProperty>
         get() = randomLook.currentProperties + vision.currentProperties
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        randomLook.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        randomLook.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -102,8 +102,13 @@ class RandomVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        randomLook.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        randomLook.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        randomLook.dispose()
+        vision.dispose()
     }
 }

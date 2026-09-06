@@ -52,7 +52,9 @@ class FollowPlayerActivity(
     private val origin = start
     val followedPlayers: MutableSet<UUID> = mutableSetOf()
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {}
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        currentPosition = position
+    }
 
     override fun tick(context: ActivityContext): TickResult {
         val world = Bukkit.getWorld(UUID.fromString(currentPosition.world.identifier)) ?: return TickResult.IGNORED
@@ -104,7 +106,7 @@ class FollowPlayerActivity(
         return TickResult.CONSUMED
     }
 
-    override fun dispose(context: ActivityContext) {
+    override fun deactivate(context: ActivityContext) {
         followedPlayers.clear()
     }
 }

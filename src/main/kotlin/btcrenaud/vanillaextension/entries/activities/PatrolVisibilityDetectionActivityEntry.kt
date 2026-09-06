@@ -108,9 +108,9 @@ class PatrolVisibilityDetectionActivity(
             patrol.currentProperties + visionProps
         }
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) {
-        patrol.initialize(context, position)
-        vision.initialize(context, position)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        patrol.activate(context, position)
+        vision.activate(context, position)
     }
 
     override fun tick(context: ActivityContext): TickResult {
@@ -147,9 +147,14 @@ class PatrolVisibilityDetectionActivity(
         }
     }
 
-    override fun dispose(context: ActivityContext) {
-        patrol.dispose(context)
-        vision.dispose(context)
+    override fun deactivate(context: ActivityContext) {
+        patrol.deactivate(context)
+        vision.deactivate(context)
+    }
+
+    override fun dispose() {
+        patrol.dispose()
+        vision.dispose()
     }
 }
 
@@ -178,7 +183,7 @@ class PatrolActivity(
         val nextNode = nodes[nodeIndex % nodes.size]
         nodeIndex = (nodeIndex + 1) % nodes.size
 
-        activity.dispose(context)
+        activity.dispose()
         activity = NavigationActivity(
              PointToPointGPS(
                 roadNetwork,
@@ -186,11 +191,17 @@ class PatrolActivity(
             ) { nextNode.position },
             currentPosition
         )
-        activity.initialize(context, currentPosition)
+        activity.activate(context, currentPosition)
         return TickResult.CONSUMED
     }
 
-    override fun initialize(context: ActivityContext, position: PositionProperty) = setup(context)
+    override fun activate(context: ActivityContext, position: PositionProperty) {
+        activity.dispose()
+        activity = IdleActivity(position)
+        nodeIndex = 0
+        nodes = emptyList()
+        setup(context)
+    }
 
     private fun setup(context: ActivityContext) {
          network = KoinJavaComponent.get<RoadNetworkManager>(RoadNetworkManager::class.java).getNetworkOrNull(roadNetwork) ?: return
@@ -214,15 +225,19 @@ class PatrolActivity(
     fun stop(context: ActivityContext) {
         if (activity !is IdleActivity) {
             val oldPosition = currentPosition
-            activity.dispose(context)
+            activity.dispose()
             activity = IdleActivity(oldPosition)
         }
     }
 
-    override fun dispose(context: ActivityContext) {
+    override fun deactivate(context: ActivityContext) {
         val oldPosition = currentPosition
-        activity.dispose(context)
+        activity.deactivate(context)
         activity = IdleActivity(oldPosition)
+    }
+
+    override fun dispose() {
+        activity.dispose()
     }
 
     override val currentPosition: PositionProperty
